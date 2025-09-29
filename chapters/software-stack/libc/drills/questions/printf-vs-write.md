@@ -21,3 +21,4 @@ What are features provided by `printf()` when compared to `write`? (choose 2 ans
 `printf()` can do buffering to reduce the number of system calls.
 Also, `printf()`, as it name suggests (the `f` suffix), does output formatting.
 aaa
+aaa
