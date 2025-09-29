@@ -7,3 +7,5 @@ skels:
 
 clean:
 	rm -rf support/
+
+test:
