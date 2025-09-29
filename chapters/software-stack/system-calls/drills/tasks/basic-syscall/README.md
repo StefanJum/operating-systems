@@ -7,6 +7,7 @@ For debugging, use `strace` to trace the system calls from your program and make
 
 1. Update the `hello.asm` and / or `hello.s` files to print both `Hello, world!` and `Bye, world!`.
    This means adding another `write()` system call.
+asd
 
    [Quiz 1](../../questions/syscall-id.md)
 
