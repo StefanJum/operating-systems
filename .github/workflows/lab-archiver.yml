@@ -29,7 +29,7 @@ jobs:
           echo "$CHANGED_FILES"
 
           # Extract unique drills directories
-          DRILLS_DIRS=$(echo "$CHANGED_FILES" | grep -Eo '^chapters/.+/.+/drills/' | sort -u || true)
+          DRILLS_DIRS=$(echo "$CHANGED_FILES" | grep -Eo '^chapters/.+/.+/drills' | sort -u || true)
 
           echo "Found drills dirs:"
           echo "$DRILLS_DIRS"
