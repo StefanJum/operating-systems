@@ -47,7 +47,7 @@ jobs:
         if: steps.find_drills.outputs.dirs != '[]'
         run: |
           echo "${{ steps.find_drills.outputs.DIRS_OUT }}" | while read dir; do
-            zip_name=$(echo "$dir" | cur -d '/' -f2- | tr '/' '-' ).zip
+            zip_name=$(echo "$dir" | cut -d '/' -f2- | tr '/' '-' ).zip
             echo "Zipping $dir -> $zip_name"
             (cd "$dir" && zip -r "/tmp/$zip_name" .)
           done
