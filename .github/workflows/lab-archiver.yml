@@ -5,6 +5,9 @@ on:
     paths:
       - 'chapters/**/**/drills/**'
 
+permissions:
+  contents: write
+
 jobs:
   zip-and-commit:
     runs-on: ubuntu-latest
@@ -50,7 +53,7 @@ jobs:
           done
 
       - name: Checkout lab-archives branch
-        if: steps.find_drills.outputs.dirs != '[]'
+        if: steps.find_drills.outputs.DIRS_OUT != '[]'
         run: |
           # Create local branch from remote if exists, otherwise create new orphan
           if git ls-remote --exit-code origin lab-archives; then
@@ -62,7 +65,7 @@ jobs:
           fi
 
       - name: Copy zips to branch and commit
-        if: steps.find_drills.outputs.dirs != '[]'
+        if: steps.find_drills.outputs.DIRS_OUT != '[]'
         run: |
           cp /tmp/*.zip .
           git add *.zip
@@ -77,7 +80,7 @@ jobs:
           fi
 
       - name: Push to lab-archives branch
-        if: steps.find_drills.outputs.dirs != '[]'
+        if: steps.find_drills.outputs.DIRS_OUT != '[]'
         run: |
           git push origin lab-archives
 
