@@ -1,0 +1,82 @@
+name: Package drills and update lab-archives branch
+
+on:
+  push:
+    paths:
+      - 'chapters/**/**/drills/**'
+
+jobs:
+  zip-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # we need full history to diff properly
+
+      - name: Find changed drills directories
+        id: find_drills
+        run: |
+          # Get list of changed files between previous and current commit
+          git fetch origin ${{ github.event.before }} --depth=1 || true
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          # Extract unique drills directories
+          DRILLS_DIRS=$(echo "$CHANGED_FILES" | grep -E '^chapters/.+/.+/drills/' | xargs -n1 dirname | sort -u || true)
+
+          echo "Found drills dirs:"
+          echo "$DRILLS_DIRS"
+
+          if [ -z "$DRILLS_DIRS" ]; then
+            echo "dirs=[]" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          DRILLS_JSON=$(printf '%s\n' "$DRILLS_DIRS" | jq -R . | jq -s .)
+          echo "dirs=$DRILLS_JSON" >> $GITHUB_OUTPUT
+
+      - name: Prepare zips for changed drills
+        if: steps.find_drills.outputs.dirs != '[]'
+        run: |
+          echo "${{ steps.find_drills.outputs.dirs }}" | jq -r '.[]' | while read dir; do
+            zip_name=$(echo "$dir" | tr '/' '-' ).zip
+            echo "Zipping $dir -> $zip_name"
+            (cd "$dir" && zip -r "/tmp/$zip_name" .)
+          done
+
+      - name: Checkout lab-archives branch
+        if: steps.find_drills.outputs.dirs != '[]'
+        run: |
+          # Create local branch from remote if exists, otherwise create new orphan
+          if git ls-remote --exit-code origin lab-archives; then
+            git fetch origin lab-archives
+            git checkout lab-archives
+          else
+            git checkout --orphan lab-archives
+            git rm -rf .
+          fi
+
+      - name: Copy zips to branch and commit
+        if: steps.find_drills.outputs.dirs != '[]'
+        run: |
+          cp /tmp/*.zip .
+          git add *.zip
+
+          # Only commit if there are changes
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "Update lab archives for drills changes"
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Push to lab-archives branch
+        if: steps.find_drills.outputs.dirs != '[]'
+        run: |
+          git push origin lab-archives
+
