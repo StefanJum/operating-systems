@@ -38,7 +38,7 @@ jobs:
 
           DRILLS_JSON=$(echo 'DIRS_OUT<<EOF'; printf '%s\n' "$DRILLS_DIRS" | jq -R . | jq -s .; echo EOF)
           echo "dirs=$DRILLS_JSON"
-          echo "dirs=$DRILLS_JSON" >> $GITHUB_OUTPUT
+          echo "$DRILLS_JSON" >> $GITHUB_OUTPUT
 
       - name: Prepare zips for changed drills
         if: steps.find_drills.outputs.dirs != '[]'
