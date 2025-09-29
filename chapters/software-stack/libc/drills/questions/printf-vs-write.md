@@ -22,3 +22,4 @@ What are features provided by `printf()` when compared to `write`? (choose 2 ans
 Also, `printf()`, as it name suggests (the `f` suffix), does output formatting.
 aaa
 aaa
+aaa
