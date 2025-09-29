@@ -1,5 +1,7 @@
 # System Calls
 
+akjs
+
 Enter the `chapters/software-stack/system-calls/drills/tasks/basic-syscall/` folder.
 Run `make` and then enter `chapters/software-stack/system-calls/drills/tasks/basic-syscall/support/` folder and go through the practice items below.
 
