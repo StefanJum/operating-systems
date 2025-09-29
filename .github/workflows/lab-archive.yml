@@ -3,7 +3,7 @@ name: Archive Labs on Commit
 on:
   push:
     branches:
-      - 'main'
+      - '**'
 
 permissions:
   contents: write
