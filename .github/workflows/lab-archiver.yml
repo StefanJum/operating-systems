@@ -36,14 +36,14 @@ jobs:
             exit 0
           fi
 
-          DRILLS_JSON=$(echo 'DIRS_OUT<<EOF'; printf '%s\n' "$DRILLS_DIRS" | jq -R . | jq -s .; echo EOF)
+          DRILLS_JSON=$(echo 'DIRS_OUT<<EOF'; printf '%s\n' "$DRILLS_DIRS"; echo EOF)
           echo "dirs=$DRILLS_JSON"
           echo "$DRILLS_JSON" >> $GITHUB_OUTPUT
 
       - name: Prepare zips for changed drills
         if: steps.find_drills.outputs.dirs != '[]'
         run: |
-          echo "${{ steps.find_drills.outputs.DIRS_OUT }}" | jq -r '.[]' | while read dir; do
+          echo "${{ steps.find_drills.outputs.DIRS_OUT }}" | while read dir; do
             zip_name=$(echo "$dir" | tr '/' '-' ).zip
             echo "Zipping $dir -> $zip_name"
             (cd "$dir" && zip -r "/tmp/$zip_name" .)
