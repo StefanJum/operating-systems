@@ -13,6 +13,7 @@ static char out_buffer[256];
 static char putchar_buffer[1024];
 static int putchar_buffer_len;
 
+//test
 /* REMOVE 5 */
 void flush(void)
 {
